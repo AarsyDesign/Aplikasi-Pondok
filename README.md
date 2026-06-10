@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Santri Report App
 
-## Getting Started
+Aplikasi internal pesantren untuk mengelola data santri, nilai, raport, guru, absensi guru, SPP, pengingat SPP manual, dan pengaturan dasar lembaga.
 
-First, run the development server:
+## Development Lokal
+
+Install dependency:
+
+```bash
+npm install
+```
+
+Siapkan `.env.local` di lokal:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Jalankan aplikasi:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Validasi Sebelum Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Jalankan:
 
-## Learn More
+```bash
+npm run lint
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Build harus berhasil sebelum project dipush atau dideploy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment ke Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push project ke GitHub.
+2. Import repository di Vercel.
+3. Buka Vercel Project Settings.
+4. Tambahkan environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+5. Jalankan deploy.
+6. Setelah deploy selesai, buka URL production.
+7. Cek route utama:
+   - `/dashboard`
+   - `/dashboard/santri`
+   - `/dashboard/raport`
+   - `/dashboard/spp`
+   - `/dashboard/pengaturan`
 
-## Deploy on Vercel
+Catatan penting:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Jangan memasukkan `.env.local` ke GitHub.
+- Jangan menggunakan service role key di frontend.
+- Gunakan Supabase publishable key untuk `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Jika production error karena env belum terbaca, cek ulang Environment Variables di Vercel lalu redeploy.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Supabase
+
+SQL awal dan policy development ada di folder `supabase/`.
+
+Untuk development MVP, jalankan SQL berikut di Supabase SQL Editor sesuai kebutuhan:
+
+- `supabase/schema.sql`
+- `supabase/seed.sql`
+- `supabase/dev-policies.sql`
+- `supabase/duplicate-checks.sql` untuk audit data dobel
