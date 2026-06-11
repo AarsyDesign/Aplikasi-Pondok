@@ -3,6 +3,11 @@ import { Card } from "@/components/ui/Card";
 
 const settings = [
   {
+    description: "Kelola profil pengguna aplikasi, nama lengkap, dan role admin, guru, atau bendahara.",
+    href: "/dashboard/pengaturan/pengguna",
+    title: "Pengguna",
+  },
+  {
     description: "Atur nama lembaga, alamat, mudir, wali kelas default, dan catatan raport.",
     href: "/dashboard/pengaturan/profil-lembaga",
     title: "Profil Lembaga",

@@ -1,16 +1,36 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 import { getSupabaseConfig } from "@/lib/supabase/utils";
 import { Database } from "@/types/database";
 
-export function createSupabaseServerClient() {
+export async function createSupabaseServerClient() {
   const config = getSupabaseConfig();
 
   if (config.error !== null) {
     return null;
   }
 
-  return createClient<Database, "public", "public">(
+  const cookieStore = await cookies();
+
+  return createServerClient<Database, "public">(
     config.supabaseUrl,
     config.supabaseAnonKey,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Server Components cannot always write cookies. The proxy refreshes
+            // auth cookies for dashboard requests.
+          }
+        },
+      },
+    },
   );
 }

@@ -1,8 +1,10 @@
+import type { UserRole } from "@/types/profile";
+
 export type Profile = {
   id: string;
-  user_id: string | null;
+  user_id: string;
   full_name: string;
-  role: string;
+  role: UserRole;
   created_at: string | null;
   updated_at: string | null;
 };

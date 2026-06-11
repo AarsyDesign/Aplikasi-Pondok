@@ -2,23 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getAllowedMenus } from "@/lib/auth/permissions";
 import { cn } from "@/lib/utils";
+import type { UserRole } from "@/types/profile";
 
-const menuItems = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Santri", href: "/dashboard/santri" },
-  { label: "Kelas / Marhalah", href: "/dashboard/kelas" },
-  { label: "Mata Pelajaran", href: "/dashboard/mapel" },
-  { label: "Input Nilai", href: "/dashboard/nilai" },
-  { label: "Raport", href: "/dashboard/raport" },
-  { label: "Guru", href: "/dashboard/guru" },
-  { label: "Absensi Guru", href: "/dashboard/absensi-guru" },
-  { label: "SPP", href: "/dashboard/spp" },
-  { label: "Pengaturan", href: "/dashboard/pengaturan" },
-];
-
-export function Sidebar() {
+export function Sidebar({ role }: { role: UserRole | null }) {
   const pathname = usePathname();
+  const menuItems = getAllowedMenus(role);
 
   return (
     <aside className="no-print border-slate-200 bg-white/95 lg:fixed lg:inset-y-0 lg:left-0 lg:z-20 lg:w-72 lg:border-r">
@@ -31,6 +21,11 @@ export function Sidebar() {
             Santri Report
           </p>
         </div>
+        {!role ? (
+          <div className="mx-4 mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+            Profil pengguna belum diatur. Hubungi admin.
+          </div>
+        ) : null}
         <nav className="flex gap-2 overflow-x-auto px-4 py-3 lg:flex-col lg:overflow-visible lg:py-6">
           {menuItems.map((item) => {
             const active =

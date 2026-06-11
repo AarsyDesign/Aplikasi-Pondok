@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 type Column<T> = {
   header: string;
-  cell: (row: T) => ReactNode;
+  cell: (row: T, index: number) => ReactNode;
 };
 
 type TableProps<T> = {
@@ -36,11 +36,11 @@ export function Table<T>({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {data.length > 0 ? (
-              data.map((row) => (
+              data.map((row, rowIndex) => (
                 <tr key={getRowKey(row)}>
                   {columns.map((column) => (
                     <td key={column.header} className="px-4 py-3 text-slate-700">
-                      {column.cell(row)}
+                      {column.cell(row, rowIndex)}
                     </td>
                   ))}
                 </tr>
