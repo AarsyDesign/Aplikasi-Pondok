@@ -40,18 +40,22 @@ Build harus berhasil sebelum project dipush atau dideploy.
 
 1. Push project ke GitHub.
 2. Import repository di Vercel.
-3. Buka Vercel Project Settings.
-4. Tambahkan environment variables:
+3. Pastikan branch yang dipilih Vercel sama dengan branch GitHub yang berisi project.
+4. Pastikan Root Directory Vercel mengarah ke root project yang berisi `package.json`.
+   - Untuk repo ini, Root Directory: `.`
+   - Jika project dipindah ke subfolder, arahkan Root Directory ke nama folder tersebut.
+5. Buka Vercel Project Settings.
+6. Tambahkan Environment Variables:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-5. Jalankan deploy.
-6. Setelah deploy selesai, buka URL production.
-7. Cek route utama:
+7. Setelah env ditambahkan, lakukan redeploy.
+8. Setelah deploy selesai, buka URL production.
+9. Cek route:
+   - `/`
    - `/dashboard`
    - `/dashboard/santri`
    - `/dashboard/raport`
    - `/dashboard/spp`
-   - `/dashboard/pengaturan`
 
 Catatan penting:
 
