@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginAdmin } from "@/services/authService";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -39,7 +40,7 @@ export function LoginForm() {
   }
 
   return (
-    <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <Input
         autoComplete="email"
         label="Email"
@@ -55,12 +56,10 @@ export function LoginForm() {
         type="password"
       />
       {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="danger">{error}</Alert>
       ) : null}
-      <Button className="w-full" disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Memproses..." : "Masuk"}
+      <Button className="w-full" isLoading={isSubmitting} type="submit">
+        Masuk
       </Button>
     </form>
   );

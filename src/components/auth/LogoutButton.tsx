@@ -21,7 +21,7 @@ export function LogoutButton() {
       disabled={isLoggingOut}
       onClick={handleLogout}
       type="button"
-      variant="secondary"
+      variant="ghost"
     >
       {isLoggingOut ? "Keluar..." : "Logout"}
     </Button>

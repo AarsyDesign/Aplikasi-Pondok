@@ -5,13 +5,8 @@ export type DashboardMenuItem = {
   href: string;
 };
 
-const commonMenus: DashboardMenuItem[] = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Profil Saya", href: "/dashboard/profil-saya" },
-];
-
 const adminMenus: DashboardMenuItem[] = [
-  ...commonMenus,
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Santri", href: "/dashboard/santri" },
   { label: "Kelas / Marhalah", href: "/dashboard/kelas" },
   { label: "Mata Pelajaran", href: "/dashboard/mapel" },
@@ -20,31 +15,27 @@ const adminMenus: DashboardMenuItem[] = [
   { label: "Guru", href: "/dashboard/guru" },
   { label: "Absensi Guru", href: "/dashboard/absensi-guru" },
   { label: "SPP", href: "/dashboard/spp" },
-  { label: "Tagihan SPP", href: "/dashboard/spp/tagihan" },
-  { label: "Pembayaran SPP", href: "/dashboard/spp/pembayaran" },
-  { label: "Pengingat SPP", href: "/dashboard/spp/pengingat" },
-  { label: "Rekap Tunggakan", href: "/dashboard/spp/rekap" },
   { label: "Pengaturan", href: "/dashboard/pengaturan" },
-  { label: "Pengaturan > Pengguna", href: "/dashboard/pengaturan/pengguna" },
+  { label: "Tentang Aplikasi", href: "/dashboard/tentang" },
 ];
 
 const guruMenus: DashboardMenuItem[] = [
-  ...commonMenus,
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Santri", href: "/dashboard/santri" },
   { label: "Input Nilai", href: "/dashboard/nilai" },
   { label: "Raport", href: "/dashboard/raport" },
   { label: "Guru", href: "/dashboard/guru" },
   { label: "Absensi Guru", href: "/dashboard/absensi-guru" },
+  { label: "Profil Saya", href: "/dashboard/profil-saya" },
+  { label: "Tentang Aplikasi", href: "/dashboard/tentang" },
 ];
 
 const bendaharaMenus: DashboardMenuItem[] = [
-  ...commonMenus,
+  { label: "Dashboard", href: "/dashboard" },
   { label: "Santri", href: "/dashboard/santri" },
   { label: "SPP", href: "/dashboard/spp" },
-  { label: "Tagihan SPP", href: "/dashboard/spp/tagihan" },
-  { label: "Pembayaran SPP", href: "/dashboard/spp/pembayaran" },
-  { label: "Pengingat SPP", href: "/dashboard/spp/pengingat" },
-  { label: "Rekap Tunggakan", href: "/dashboard/spp/rekap" },
+  { label: "Profil Saya", href: "/dashboard/profil-saya" },
+  { label: "Tentang Aplikasi", href: "/dashboard/tentang" },
 ];
 
 const allowedRoutePrefixes: Record<UserRole, string[]> = {
@@ -56,11 +47,13 @@ const allowedRoutePrefixes: Record<UserRole, string[]> = {
     "/dashboard/raport",
     "/dashboard/guru",
     "/dashboard/absensi-guru",
+    "/dashboard/tentang",
   ],
   bendahara: [
     "/dashboard/profil-saya",
     "/dashboard/santri",
     "/dashboard/spp",
+    "/dashboard/tentang",
   ],
 };
 
@@ -80,6 +73,22 @@ export function getAllowedMenus(role: UserRole | null): DashboardMenuItem[] {
   }
 
   return menuByRole[role];
+}
+
+export function formatRoleLabel(role: UserRole | null) {
+  if (role === "admin") {
+    return "Admin";
+  }
+
+  if (role === "guru") {
+    return "Guru";
+  }
+
+  if (role === "bendahara") {
+    return "Bendahara";
+  }
+
+  return "Profil belum lengkap";
 }
 
 export function canAccessRoute(role: UserRole | null, pathname: string) {

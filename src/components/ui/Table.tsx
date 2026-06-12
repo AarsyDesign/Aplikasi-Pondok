@@ -19,15 +19,15 @@ export function Table<T>({
   emptyText = "Belum ada data.",
 }: TableProps<T>) {
   return (
-    <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50/80">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.header}
-                  className="px-4 py-3 text-left font-semibold text-slate-700"
+                  className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500"
                 >
                   {column.header}
                 </th>
@@ -37,9 +37,9 @@ export function Table<T>({
           <tbody className="divide-y divide-slate-100">
             {data.length > 0 ? (
               data.map((row, rowIndex) => (
-                <tr key={getRowKey(row)}>
+                <tr key={getRowKey(row)} className="transition hover:bg-emerald-50/40">
                   {columns.map((column) => (
-                    <td key={column.header} className="px-4 py-3 text-slate-700">
+                    <td key={column.header} className="px-4 py-3.5 align-middle text-slate-700">
                       {column.cell(row, rowIndex)}
                     </td>
                   ))}
@@ -47,8 +47,10 @@ export function Table<T>({
               ))
             ) : (
               <tr>
-                <td className="px-4 py-6 text-center text-slate-500" colSpan={columns.length}>
-                  {emptyText}
+                <td className="px-4 py-10 text-center" colSpan={columns.length}>
+                  <div className="mx-auto max-w-sm rounded-lg border border-dashed border-slate-200 bg-slate-50/70 px-4 py-5 text-sm text-slate-500">
+                    {emptyText}
+                  </div>
                 </td>
               </tr>
             )}

@@ -2,16 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { UserProfileForm } from "@/components/pengaturan/UserProfileForm";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Table } from "@/components/ui/Table";
+import { formatRoleLabel } from "@/lib/auth/permissions";
 import {
   createProfile,
   deleteProfile,
   getProfiles,
   updateProfile,
 } from "@/services/profileService";
-import { roleLabels, type Profile, type ProfileFormData } from "@/types/profile";
+import type { Profile, ProfileFormData } from "@/types/profile";
 
 function formatDate(value: string | null) {
   if (!value) {
@@ -22,18 +26,6 @@ function formatDate(value: string | null) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
-}
-
-function roleBadgeClass(role: Profile["role"]) {
-  if (role === "admin") {
-    return "bg-emerald-50 text-emerald-700";
-  }
-
-  if (role === "guru") {
-    return "bg-sky-50 text-sky-700";
-  }
-
-  return "bg-slate-100 text-slate-700";
 }
 
 export function UserProfileTable({ currentUserId }: { currentUserId: string }) {
@@ -184,11 +176,9 @@ export function UserProfileTable({ currentUserId }: { currentUserId: string }) {
     {
       header: "Role",
       cell: (profile: Profile) => (
-        <span
-          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${roleBadgeClass(profile.role)}`}
-        >
-          {roleLabels[profile.role]}
-        </span>
+        <StatusBadge status={profile.role}>
+          {formatRoleLabel(profile.role)}
+        </StatusBadge>
       ),
     },
     {
@@ -270,21 +260,15 @@ export function UserProfileTable({ currentUserId }: { currentUserId: string }) {
       </Card>
 
       {message ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          {message}
-        </div>
+        <Alert variant="success">{message}</Alert>
       ) : null}
 
       {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+        <Alert variant="danger">{error}</Alert>
       ) : null}
 
       {isLoading ? (
-        <Card>
-          <p className="text-sm text-slate-600">Memuat profil pengguna...</p>
-        </Card>
+        <LoadingState message="Memuat profil pengguna..." />
       ) : (
         <Table
           columns={columns}

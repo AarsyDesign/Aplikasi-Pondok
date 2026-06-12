@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { MapelForm } from "@/components/mapel/MapelForm";
 import { MapelTable } from "@/components/mapel/MapelTable";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Select } from "@/components/ui/Select";
 import { getClasses } from "@/services/classService";
 import {
@@ -159,17 +162,15 @@ export default function MapelPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Mata Pelajaran</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Kelola mata pelajaran dan hubungkan dengan kelas / marhalah.
-          </p>
-        </div>
+      <PageHeader
+        actions={
         <Button type="button" onClick={handleAddClick}>
           Tambah Mata Pelajaran
         </Button>
-      </div>
+        }
+        description="Kelola mata pelajaran dan hubungkan dengan kelas / marhalah."
+        title="Mata Pelajaran"
+      />
 
       <Card>
         <Select
@@ -186,17 +187,9 @@ export default function MapelPage() {
         />
       </Card>
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
-      {success ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </div>
-      ) : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
 
       {showForm ? (
         <Card>
@@ -215,9 +208,7 @@ export default function MapelPage() {
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-          Memuat data mata pelajaran...
-        </div>
+        <LoadingState message="Memuat data mata pelajaran..." />
       ) : (
         <MapelTable
           subjects={filteredSubjects}

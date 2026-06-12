@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { NilaiTable } from "@/components/nilai/NilaiTable";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Select } from "@/components/ui/Select";
 import { getClasses } from "@/services/classService";
 import {
@@ -125,19 +129,17 @@ export default function NilaiPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Data Nilai</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Rekap nilai santri berdasarkan kelas, periode, dan semester.
-          </p>
-        </div>
+      <PageHeader
+        actions={
         <Button asChild>
           <Link href="/dashboard/nilai/input">Input Nilai</Link>
         </Button>
-      </div>
+        }
+        description="Rekap nilai santri berdasarkan kelas, periode, dan semester."
+        title="Data Nilai"
+      />
 
-      <div className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 xl:grid-cols-4">
+      <Card className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Select
           label="Pilih Kelas / Marhalah"
           value={classFilter}
@@ -186,24 +188,14 @@ export default function NilaiPage() {
             })),
           ]}
         />
-      </div>
+      </Card>
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
-      {success ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </div>
-      ) : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
 
       {isLoading ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-          Memuat data nilai...
-        </div>
+        <LoadingState message="Memuat data nilai..." />
       ) : (
         <NilaiTable
           grades={filteredGrades}

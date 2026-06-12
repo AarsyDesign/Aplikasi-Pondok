@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { SppBillForm } from "@/components/spp/SppBillForm";
 import { SppBillTable } from "@/components/spp/SppBillTable";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Select } from "@/components/ui/Select";
 import { getClasses } from "@/services/classService";
 import { createSppBill, deleteSppBill, getSppBills, updateSppBill } from "@/services/sppService";
@@ -87,23 +90,26 @@ export default function SppTagihanPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div><h1 className="text-2xl font-bold text-slate-950">Tagihan SPP</h1><p className="mt-1 text-sm text-slate-600">Kelola tagihan SPP santri.</p></div>
+      <PageHeader
+        actions={
         <Button type="button" onClick={() => { setSelectedBill(null); setShowForm(true); }}>Buat Tagihan</Button>
-      </div>
+        }
+        description="Kelola tagihan SPP santri."
+        title="Tagihan SPP"
+      />
       <Card>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Select label="Kelas / Marhalah" value={classFilter} onChange={(e) => setClassFilter(e.target.value)} options={[{ label: "Semua kelas", value: "" }, ...classes.map((c) => ({ label: c.name, value: c.id }))]} />
           <Select label="Bulan" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)} options={[{ label: "Semua bulan", value: "" }, ...monthOptions]} />
-          <Select label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as SppBillStatus | "")} options={[{ label: "Semua status", value: "" }, { label: "belum_bayar", value: "belum_bayar" }, { label: "sebagian", value: "sebagian" }, { label: "lunas", value: "lunas" }]} />
-          <label className="block text-sm font-medium text-slate-700">Tahun<input className="mt-2 h-10 w-full rounded-md border border-slate-300 px-3 text-sm" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)} /></label>
+          <Select label="Status" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as SppBillStatus | "")} options={[{ label: "Semua status", value: "" }, { label: "Belum Bayar", value: "belum_bayar" }, { label: "Sebagian", value: "sebagian" }, { label: "Lunas", value: "lunas" }]} />
+          <label className="block text-sm font-semibold text-slate-700">Tahun<input className="mt-2 h-11 w-full rounded-md border border-slate-200 px-3 text-sm shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)} /></label>
         </div>
         <Button className="mt-4" type="button" variant="secondary" onClick={loadBills}>Terapkan Filter</Button>
       </Card>
-      {error ? <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
-      {success ? <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div> : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
       {showForm ? <Card><h2 className="mb-4 text-lg font-semibold">{selectedBill ? "Edit Tagihan SPP" : "Buat Tagihan SPP"}</h2><SppBillForm key={selectedBill?.id ?? "new-bill"} students={students} initialData={selectedBill} isSaving={isSaving} onSubmit={handleSubmit} onCancel={() => setShowForm(false)} /></Card> : null}
-      {isLoading ? <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">Memuat tagihan SPP...</div> : <SppBillTable bills={bills} deletingId={deletingId} onEdit={(bill) => { setSelectedBill(bill); setShowForm(true); }} onDelete={handleDelete} />}
+      {isLoading ? <LoadingState message="Memuat tagihan SPP..." /> : <SppBillTable bills={bills} deletingId={deletingId} onEdit={(bill) => { setSelectedBill(bill); setShowForm(true); }} onDelete={handleDelete} />}
     </div>
   );
 }

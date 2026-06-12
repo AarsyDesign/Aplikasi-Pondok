@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
 import { Select } from "@/components/ui/Select";
 import { getClasses } from "@/services/classService";
 import {
@@ -286,15 +289,13 @@ export function NilaiForm() {
 
   if (isLoading) {
     return (
-      <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-        Memuat form input nilai...
-      </div>
+      <LoadingState message="Memuat form input nilai..." />
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 xl:grid-cols-4">
+      <Card className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Select
           label="Pilih Kelas / Marhalah"
           value={classId}
@@ -354,37 +355,27 @@ export function NilaiForm() {
             })),
           ]}
         />
-      </div>
+      </Card>
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
-      {success ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </div>
-      ) : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
 
       {!studentId ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 text-sm font-medium text-slate-600 shadow-sm">
           Pilih kelas, santri, tahun ajaran, dan semester untuk mulai input nilai.
         </div>
       ) : isLoadingSubjects ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-          Memuat mata pelajaran...
-        </div>
+        <LoadingState message="Memuat mata pelajaran..." />
       ) : subjects.length === 0 ? (
-        <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600">
+        <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600 shadow-sm">
           Belum ada mata pelajaran untuk kelas ini.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50">
+              <thead className="bg-slate-50/80">
                 <tr>
                   {[
                     "Mata Pelajaran",
@@ -394,7 +385,7 @@ export function NilaiForm() {
                     "Nilai Akhir",
                     "Catatan Guru",
                   ].map((header) => (
-                    <th key={header} className="px-4 py-3 text-left font-semibold text-slate-700">
+                    <th key={header} className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
                       {header}
                     </th>
                   ))}
@@ -405,15 +396,15 @@ export function NilaiForm() {
                   const row = rows.find((item) => item.subject_id === subject.id);
 
                   return (
-                    <tr key={subject.id}>
-                      <td className="min-w-48 px-4 py-3 font-medium text-slate-950">
+                    <tr key={subject.id} className="transition hover:bg-emerald-50/40">
+                      <td className="min-w-48 px-4 py-3.5 font-semibold text-slate-950">
                         {subject.name}
                       </td>
                       {(["daily_score", "task_score", "exam_score", "final_score"] as const).map(
                         (field) => (
-                          <td key={field} className="px-4 py-3">
+                          <td key={field} className="px-4 py-3.5">
                             <input
-                              className="h-10 w-24 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+                              className="h-11 w-28 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
                               inputMode="decimal"
                               min={0}
                               max={100}
@@ -426,9 +417,9 @@ export function NilaiForm() {
                           </td>
                         ),
                       )}
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <input
-                          className="h-10 w-64 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+                          className="h-11 w-72 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
                           placeholder="Catatan Guru"
                           value={row?.teacher_note ?? ""}
                           onChange={(event) =>
@@ -443,8 +434,8 @@ export function NilaiForm() {
             </table>
           </div>
           <div className="border-t border-slate-200 p-4">
-            <Button type="button" onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "Menyimpan..." : "Simpan Nilai"}
+            <Button type="button" onClick={handleSave} isLoading={isSaving}>
+              Simpan Nilai
             </Button>
           </div>
         </div>

@@ -26,9 +26,12 @@ export function SppReminderMessagePreview({ reminder, onCopy }: SppReminderMessa
           Salin Pesan
         </Button>
       </div>
-      <pre className="mt-4 whitespace-pre-wrap rounded-md border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-800">
-        {message}
-      </pre>
+      <textarea
+        className="mt-4 min-h-72 w-full rounded-md border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-800 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+        readOnly
+        value={message}
+        onFocus={(event) => event.currentTarget.select()}
+      />
     </Card>
   );
 }

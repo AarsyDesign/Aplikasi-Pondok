@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Student } from "@/types/student";
 
 type SantriTableProps = {
@@ -13,21 +14,21 @@ type SantriTableProps = {
 export function SantriTable({ students, deletingId, onDelete }: SantriTableProps) {
   if (students.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600">
+      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600 shadow-sm">
         Belum ada data santri.
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50/80">
             <tr>
               {["No", "NIS", "Nama", "Kelas / Marhalah", "Jenis Kelamin", "Status", "Aksi"].map(
                 (header) => (
-                  <th key={header} className="px-4 py-3 text-left font-semibold text-slate-700">
+                  <th key={header} className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
                     {header}
                   </th>
                 ),
@@ -36,14 +37,14 @@ export function SantriTable({ students, deletingId, onDelete }: SantriTableProps
           </thead>
           <tbody className="divide-y divide-slate-100">
             {students.map((student, index) => (
-              <tr key={student.id}>
-                <td className="px-4 py-3 text-slate-600">{index + 1}</td>
-                <td className="px-4 py-3 text-slate-700">{student.nis || "-"}</td>
-                <td className="px-4 py-3 font-medium text-slate-950">{student.full_name}</td>
-                <td className="px-4 py-3 text-slate-700">{student.className}</td>
-                <td className="px-4 py-3 text-slate-700">{student.gender || "-"}</td>
-                <td className="px-4 py-3 text-slate-700">{student.status}</td>
-                <td className="px-4 py-3">
+              <tr key={student.id} className="transition hover:bg-emerald-50/40">
+                <td className="px-4 py-3.5 text-slate-600">{index + 1}</td>
+                <td className="px-4 py-3.5 text-slate-700">{student.nis || "-"}</td>
+                <td className="px-4 py-3.5 font-semibold text-slate-950">{student.full_name}</td>
+                <td className="px-4 py-3.5 text-slate-700">{student.className}</td>
+                <td className="px-4 py-3.5 text-slate-700">{student.gender || "-"}</td>
+                <td className="px-4 py-3.5"><StatusBadge status={student.status} /></td>
+                <td className="px-4 py-3.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       className="font-medium text-emerald-700 hover:text-emerald-900"

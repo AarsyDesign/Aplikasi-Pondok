@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { SppPaymentForm } from "@/components/spp/SppPaymentForm";
 import { SppPaymentTable } from "@/components/spp/SppPaymentTable";
+import { Alert } from "@/components/ui/Alert";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { createSppPayment, getSppBills, getSppPaymentsByStudent } from "@/services/sppService";
 import { getStudents } from "@/services/studentService";
 import { SppBill, SppPayment, SppPaymentFormData } from "@/types/spp";
@@ -58,14 +61,14 @@ export default function SppPembayaranPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Input Pembayaran SPP</h1>
-        <p className="mt-1 text-sm text-slate-600">Catat pembayaran SPP santri.</p>
-      </div>
-      {error ? <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
-      {success ? <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{success}</div> : null}
+      <PageHeader
+        description="Catat pembayaran SPP santri."
+        title="Input Pembayaran SPP"
+      />
+      {error ? <Alert variant="danger">{error}</Alert> : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
       <Card>
-        {isLoading ? <p className="text-sm text-slate-600">Memuat form pembayaran...</p> : <SppPaymentForm bills={bills} students={students} isSaving={isSaving} onSubmit={handleSubmit} />}
+        {isLoading ? <LoadingState message="Memuat form pembayaran..." /> : <SppPaymentForm bills={bills} students={students} isSaving={isSaving} onSubmit={handleSubmit} />}
       </Card>
       <div>
         <h2 className="mb-3 text-lg font-semibold text-slate-950">Riwayat Pembayaran Terbaru</h2>

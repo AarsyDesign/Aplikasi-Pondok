@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { AbsensiGuruForm } from "@/components/absensi/AbsensiGuruForm";
 import { AbsensiGuruTable } from "@/components/absensi/AbsensiGuruTable";
+import { Alert } from "@/components/ui/Alert";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   getTeacherAttendancesByDate,
   getTeacherAttendanceSummaryByDate,
@@ -78,18 +81,16 @@ export default function AbsensiGuruPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Absensi Guru</h1>
-        <p className="mt-1 text-sm text-slate-600">
-          Catat dan lihat rekap kehadiran guru per tanggal.
-        </p>
-      </div>
+      <PageHeader
+        description="Catat dan lihat rekap kehadiran guru per tanggal."
+        title="Absensi Guru"
+      />
 
       <Card>
-        <label className="block max-w-xs text-sm font-medium text-slate-700">
+        <label className="block max-w-xs text-sm font-semibold text-slate-700">
           Tanggal Absensi
           <input
-            className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+            className="mt-2 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 shadow-sm outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
             type="date"
             value={date}
             onChange={(event) => setDate(event.target.value)}
@@ -106,26 +107,20 @@ export default function AbsensiGuruPage() {
           ["Alfa", summary.alfa],
         ].map(([label, value]) => (
           <Card key={label}>
-            <p className="text-sm text-slate-500">{label}</p>
-            <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
+            <p className="text-sm font-semibold text-slate-500">{label}</p>
+            <p className="mt-3 text-3xl font-bold tracking-tight text-slate-950">{value}</p>
           </Card>
         ))}
       </section>
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
       <AbsensiGuruForm date={date} onSaved={() => loadAttendanceData(date)} />
 
       <div>
         <h2 className="mb-3 text-lg font-semibold text-slate-950">Rekap Absensi</h2>
         {isLoading ? (
-          <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-            Memuat rekap absensi...
-          </div>
+          <LoadingState message="Memuat rekap absensi..." />
         ) : (
           <AbsensiGuruTable attendances={attendances} />
         )}

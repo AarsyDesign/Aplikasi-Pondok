@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/Card";
+import { formatRoleLabel } from "@/lib/auth/permissions";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { isUserRole, roleLabels } from "@/types/profile";
+import { isUserRole } from "@/types/profile";
 
 export default async function MyProfilePage() {
   const supabase = await createSupabaseServerClient();
@@ -40,7 +41,7 @@ export default async function MyProfilePage() {
           <div>
             <dt className="font-medium text-slate-500">Nama pengguna</dt>
             <dd className="mt-1 text-slate-950">
-              {profile?.full_name ?? "Profil pengguna belum diatur"}
+              {profile?.full_name ?? "Profil pengguna belum lengkap"}
             </dd>
           </div>
           <div>
@@ -50,14 +51,14 @@ export default async function MyProfilePage() {
           <div>
             <dt className="font-medium text-slate-500">Role</dt>
             <dd className="mt-1 text-slate-950">
-              {role ? roleLabels[role] : "Belum diatur"}
+              {formatRoleLabel(role)}
             </dd>
           </div>
         </dl>
 
         {!profile || !role ? (
           <div className="mt-6 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Profil pengguna belum diatur. Hubungi admin.
+            Profil pengguna belum lengkap. Hubungi admin.
           </div>
         ) : null}
       </Card>

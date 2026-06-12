@@ -19,17 +19,17 @@ export function NilaiTable({
 }: NilaiTableProps) {
   if (grades.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600">
+      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600 shadow-sm">
         Belum ada data nilai.
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-50/80">
             <tr>
               {(mode === "summary"
                 ? [
@@ -52,7 +52,7 @@ export function NilaiTable({
                     "Catatan Guru",
                   ]
               ).map((header) => (
-                <th key={header} className="px-4 py-3 text-left font-semibold text-slate-700">
+                <th key={header} className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
                   {header}
                 </th>
               ))}
@@ -60,17 +60,17 @@ export function NilaiTable({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {grades.map((grade, index) => (
-              <tr key={grade.id}>
-                <td className="px-4 py-3 text-slate-600">{index + 1}</td>
+              <tr key={grade.id} className="transition hover:bg-emerald-50/40">
+                <td className="px-4 py-3.5 text-slate-600">{index + 1}</td>
                 {mode === "summary" ? (
                   <>
-                    <td className="px-4 py-3 font-medium text-slate-950">{grade.studentName}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.className}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.subjectName}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.academicYearName}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.semesterName}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.final_score ?? "-"}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3.5 font-semibold text-slate-950">{grade.studentName}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.className}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.subjectName}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.academicYearName}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.semesterName}</td>
+                    <td className="px-4 py-3.5 font-semibold text-slate-950">{grade.final_score ?? "-"}</td>
+                    <td className="px-4 py-3.5">
                       <div className="flex flex-wrap gap-2">
                         {grade.studentId ? (
                           <Link
@@ -96,12 +96,12 @@ export function NilaiTable({
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-3 font-medium text-slate-950">{grade.subjectName}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.daily_score ?? "-"}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.task_score ?? "-"}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.exam_score ?? "-"}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.final_score ?? "-"}</td>
-                    <td className="px-4 py-3 text-slate-700">{grade.teacher_note ?? "-"}</td>
+                    <td className="px-4 py-3.5 font-semibold text-slate-950">{grade.subjectName}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.daily_score ?? "-"}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.task_score ?? "-"}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.exam_score ?? "-"}</td>
+                    <td className="px-4 py-3.5 font-semibold text-slate-950">{grade.final_score ?? "-"}</td>
+                    <td className="px-4 py-3.5 text-slate-700">{grade.teacher_note ?? "-"}</td>
                   </>
                 )}
               </tr>

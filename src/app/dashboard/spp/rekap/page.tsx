@@ -5,6 +5,10 @@ import { ExportCsvButton } from "@/components/spp/ExportCsvButton";
 import { SppArrearsFilters } from "@/components/spp/SppArrearsFilters";
 import { SppArrearsSummaryCards } from "@/components/spp/SppArrearsSummaryCards";
 import { SppArrearsTable } from "@/components/spp/SppArrearsTable";
+import { Alert } from "@/components/ui/Alert";
+import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { createSppReminderMessage, createWhatsAppUrl, isValidWhatsAppNumber } from "@/lib/whatsapp";
 import { getClasses } from "@/services/classService";
 import { getSppArrearsReport, getSppArrearsSummary } from "@/services/sppService";
@@ -120,10 +124,10 @@ export default function SppArrearsReportPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-950">Rekap Tunggakan SPP</h1>
-        <p className="mt-1 text-sm text-slate-600">Pantau tunggakan SPP berdasarkan kelas, bulan, tahun, dan status.</p>
-      </div>
+      <PageHeader
+        description="Pantau tunggakan SPP berdasarkan kelas, bulan, tahun, dan status."
+        title="Rekap Tunggakan SPP"
+      />
 
       <SppArrearsFilters
         classes={classes}
@@ -138,11 +142,11 @@ export default function SppArrearsReportPage() {
         onYearChange={setYearFilter}
       />
 
-      {error ? <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
       <SppArrearsSummaryCards summary={summary} />
 
-      <div className="flex flex-col justify-between gap-3 rounded-md border border-slate-200 bg-white p-4 sm:flex-row sm:items-center">
+      <Card className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h2 className="text-base font-semibold text-slate-950">Data Rekap</h2>
           <p className="mt-1 text-sm text-slate-600">Export data sesuai filter yang sedang tampil.</p>
@@ -161,10 +165,10 @@ export default function SppArrearsReportPage() {
           }}
           onEmptyData={handleEmptyExport}
         />
-      </div>
+      </Card>
 
       {isLoading ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">Memuat rekap tunggakan SPP...</div>
+        <LoadingState message="Memuat rekap tunggakan SPP..." />
       ) : (
         <SppArrearsTable items={items} emptyMessage={emptyMessage} onOpenWhatsApp={handleOpenWhatsApp} />
       )}

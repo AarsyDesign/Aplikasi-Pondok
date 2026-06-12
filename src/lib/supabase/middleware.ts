@@ -1,7 +1,23 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { canAccessRoute } from "@/lib/auth/permissions";
 import { getSupabaseConfig } from "@/lib/supabase/utils";
 import { Database } from "@/types/database";
+import { isUserRole } from "@/types/profile";
+
+function redirectWithCookies(
+  request: NextRequest,
+  response: NextResponse,
+  pathname: string,
+) {
+  const redirectResponse = NextResponse.redirect(new URL(pathname, request.url));
+
+  response.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie);
+  });
+
+  return redirectResponse;
+}
 
 export async function updateSession(request: NextRequest) {
   const config = getSupabaseConfig();
@@ -38,7 +54,30 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirectWithCookies(request, response, "/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const role = profile && isUserRole(profile.role) ? profile.role : null;
+  const pathname = request.nextUrl.pathname;
+
+  if (!canAccessRoute(role, pathname)) {
+    return redirectWithCookies(
+      request,
+      response,
+      role ? "/dashboard/akses-ditolak" : "/dashboard/profil-saya",
+    );
+  }
 
   return response;
 }

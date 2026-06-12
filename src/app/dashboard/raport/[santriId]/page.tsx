@@ -5,6 +5,7 @@ import { RaportHeader } from "@/components/raport/RaportHeader";
 import { RaportTable } from "@/components/raport/RaportTable";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { getReportByStudent } from "@/services/reportService";
 
 export default async function RaportPreviewPage({
@@ -51,22 +52,22 @@ export default async function RaportPreviewPage({
 
   return (
     <div className="space-y-6">
-      <div className="no-print flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Raport Santri</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Preview raport berdasarkan nilai yang sudah tersimpan.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="no-print">
+        <PageHeader
+          actions={
+        <>
           <Button asChild variant="secondary">
             <Link href="/dashboard/raport">Kembali</Link>
           </Button>
           <PrintButton />
-        </div>
+        </>
+          }
+          description="Preview raport berdasarkan nilai yang sudah tersimpan."
+          title="Raport Santri"
+        />
       </div>
 
-      <article className="print-area print-page mx-auto max-w-[210mm] border border-slate-200 bg-white p-10 text-slate-950 shadow-sm">
+      <article className="print-area print-page mx-auto max-w-[210mm] rounded-lg border border-slate-200 bg-white p-10 text-slate-950 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
         <RaportHeader report={report} />
         {report.grades.length > 0 ? (
           <RaportTable grades={report.grades} />

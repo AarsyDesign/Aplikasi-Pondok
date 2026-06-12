@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import { KelasForm } from "@/components/kelas/KelasForm";
 import { KelasTable } from "@/components/kelas/KelasTable";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   createClass,
   deleteClass,
@@ -139,29 +142,19 @@ export default function KelasPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Kelas / Marhalah</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Kelola data kelas dan marhalah yang digunakan oleh santri dan mapel.
-          </p>
-        </div>
+      <PageHeader
+        actions={
         <Button type="button" onClick={handleAddClick}>
           Tambah Kelas / Marhalah
         </Button>
-      </div>
+        }
+        description="Kelola data kelas dan marhalah yang digunakan oleh santri dan mapel."
+        title="Kelas / Marhalah"
+      />
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
-      {success ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </div>
-      ) : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
 
       {showForm ? (
         <Card>
@@ -179,9 +172,7 @@ export default function KelasPage() {
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-          Memuat data kelas / marhalah...
-        </div>
+        <LoadingState message="Memuat data kelas / marhalah..." />
       ) : (
         <KelasTable
           classes={classes}

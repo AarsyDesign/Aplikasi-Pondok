@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { SantriTable } from "@/components/santri/SantriTable";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Select } from "@/components/ui/Select";
 import { getClasses } from "@/services/classService";
 import { deleteStudent, getStudents } from "@/services/studentService";
@@ -84,23 +88,21 @@ export default function SantriPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-950">Data Santri</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Kelola data santri, pencarian, dan filter kelas.
-          </p>
-        </div>
+      <PageHeader
+        actions={
         <Button asChild>
           <Link href="/dashboard/santri/tambah">Tambah Santri</Link>
         </Button>
-      </div>
+        }
+        description="Kelola data santri, pencarian, dan filter kelas."
+        title="Data Santri"
+      />
 
-      <div className="grid gap-4 rounded-md border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_260px]">
-        <label className="block text-sm font-medium text-slate-700">
+      <Card className="grid gap-4 md:grid-cols-[1fr_260px]">
+        <label className="block text-sm font-semibold text-slate-700">
           Pencarian
           <input
-            className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
+            className="mt-2 h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
             placeholder="Cari nama atau NIS..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -118,18 +120,12 @@ export default function SantriPage() {
             })),
           ]}
         />
-      </div>
+      </Card>
 
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
+      {error ? <Alert variant="danger">{error}</Alert> : null}
 
       {isLoading ? (
-        <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-          Memuat data santri...
-        </div>
+        <LoadingState message="Memuat data santri..." />
       ) : (
         <SantriTable students={filteredStudents} deletingId={deletingId} onDelete={handleDelete} />
       )}

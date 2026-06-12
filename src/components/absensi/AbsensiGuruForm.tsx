@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
+import { LoadingState } from "@/components/ui/LoadingState";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { getActiveTeachers } from "@/services/teacherService";
 import {
   getTeacherAttendancesByDate,
@@ -13,7 +16,7 @@ import { TeacherAttendanceInput, TeacherAttendanceStatus } from "@/types/teacher
 type AttendanceRow = {
   id?: string;
   teacher_id: string;
-  status: TeacherAttendanceStatus | "";
+  status: TeacherAttendanceStatus | null;
   note: string;
 };
 
@@ -22,13 +25,12 @@ type AbsensiGuruFormProps = {
   onSaved: () => void;
 };
 
-const statusOptions: Array<{ label: string; value: TeacherAttendanceStatus | "" }> = [
-  { label: "Pilih status", value: "" },
-  { label: "hadir", value: "hadir" },
-  { label: "izin", value: "izin" },
-  { label: "sakit", value: "sakit" },
-  { label: "alfa", value: "alfa" },
-];
+function getCurrentTimeLabel() {
+  return new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date());
+}
 
 export function AbsensiGuruForm({ date, onSaved }: AbsensiGuruFormProps) {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -56,7 +58,7 @@ export function AbsensiGuruForm({ date, onSaved }: AbsensiGuruFormProps) {
             return {
               id: existingAttendance?.id,
               note: existingAttendance?.note ?? "",
-              status: existingAttendance?.status ?? "hadir",
+              status: existingAttendance?.status ?? null,
               teacher_id: teacher.id,
             };
           }),
@@ -83,37 +85,30 @@ export function AbsensiGuruForm({ date, onSaved }: AbsensiGuruFormProps) {
     [teachers],
   );
 
-  function updateRow(teacherId: string, field: keyof AttendanceRow, value: string) {
-    setRows((currentRows) =>
-      currentRows.map((row) =>
-        row.teacher_id === teacherId ? { ...row, [field]: value } : row,
-      ),
-    );
-  }
-
-  async function handleSave() {
+  async function saveRows(nextRows: AttendanceRow[], successMessage: string) {
     setError("");
     setSuccess("");
 
-    const invalidRow = rows.find((row) => !row.status);
+    const changedRows = nextRows.filter((row) => row.status);
 
-    if (invalidRow) {
-      setError(`Status absensi ${teacherNameMap.get(invalidRow.teacher_id) ?? "guru"} wajib dipilih.`);
+    if (changedRows.length === 0) {
+      setError("Pilih minimal satu tombol absensi sebelum menyimpan.");
       return;
     }
 
-    const payload: TeacherAttendanceInput[] = rows.map((row) => ({
+    const payload: TeacherAttendanceInput[] = changedRows.map((row) => ({
       attendance_date: date,
       id: row.id,
       note: row.note.trim() || null,
-      status: row.status || "hadir",
+      status: row.status ?? "hadir",
       teacher_id: row.teacher_id,
     }));
 
     try {
       setIsSaving(true);
       await upsertTeacherAttendances(payload);
-      setSuccess("Absensi guru berhasil disimpan.");
+      setRows(nextRows);
+      setSuccess(successMessage);
       onSaved();
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "Gagal menyimpan absensi guru.");
@@ -122,17 +117,40 @@ export function AbsensiGuruForm({ date, onSaved }: AbsensiGuruFormProps) {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="rounded-md border border-slate-200 bg-white p-6 text-sm text-slate-600">
-        Memuat daftar guru...
-      </div>
+  async function handleMarkAttendance(
+    teacherId: string,
+    status: TeacherAttendanceStatus,
+  ) {
+    const timeLabel = getCurrentTimeLabel();
+    const note =
+      status === "hadir"
+        ? `Hadir pukul ${timeLabel}`
+        : status === "izin"
+          ? `Izin dicatat pukul ${timeLabel}`
+          : status === "sakit"
+            ? `Sakit dicatat pukul ${timeLabel}`
+            : `Alfa dicatat pukul ${timeLabel}`;
+    const teacherName = teacherNameMap.get(teacherId) ?? "Guru";
+    const nextRows = rows.map((row) =>
+      row.teacher_id === teacherId
+        ? {
+            ...row,
+            note,
+            status,
+          }
+        : row,
     );
+
+    await saveRows(nextRows, `Absensi ${teacherName} berhasil dicatat.`);
+  }
+
+  if (isLoading) {
+    return <LoadingState message="Memuat daftar guru..." />;
   }
 
   if (teachers.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600">
+      <div className="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600 shadow-sm">
         Belum ada guru aktif. Tambahkan data guru terlebih dahulu.
       </div>
     );
@@ -140,62 +158,75 @@ export function AbsensiGuruForm({ date, onSaved }: AbsensiGuruFormProps) {
 
   return (
     <div className="space-y-4">
-      {error ? (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
-      ) : null}
-      {success ? (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          {success}
-        </div>
-      ) : null}
-      <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      {error ? <Alert variant="danger">{error}</Alert> : null}
+      {success ? <Alert variant="success">{success}</Alert> : null}
+      <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200 text-sm">
-            <thead className="bg-slate-50">
+            <thead className="bg-slate-50/80">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-slate-700">Nama Guru</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-700">Status</th>
-                <th className="px-4 py-3 text-left font-semibold text-slate-700">Catatan</th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Nama Guru</th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Absensi</th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Hasil</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {rows.map((row) => (
-                <tr key={row.teacher_id}>
-                  <td className="px-4 py-3 font-medium text-slate-950">
+                <tr key={row.teacher_id} className="transition hover:bg-emerald-50/40">
+                  <td className="px-4 py-3.5 font-semibold text-slate-950">
                     {teacherNameMap.get(row.teacher_id) ?? "-"}
                   </td>
-                  <td className="px-4 py-3">
-                    <select
-                      className="h-10 w-40 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
-                      value={row.status}
-                      onChange={(event) => updateRow(row.teacher_id, "status", event.target.value)}
-                    >
-                      {statusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                  <td className="px-4 py-3.5">
+                    <div className="flex min-w-72 flex-wrap gap-2">
+                      <Button
+                        className="min-h-0 px-3 py-1.5"
+                        disabled={isSaving}
+                        onClick={() => void handleMarkAttendance(row.teacher_id, "hadir")}
+                        type="button"
+                      >
+                        Hadir Sekarang
+                      </Button>
+                      <Button
+                        className="min-h-0 px-3 py-1.5"
+                        disabled={isSaving}
+                        onClick={() => void handleMarkAttendance(row.teacher_id, "izin")}
+                        type="button"
+                        variant="secondary"
+                      >
+                        Izin
+                      </Button>
+                      <Button
+                        className="min-h-0 px-3 py-1.5"
+                        disabled={isSaving}
+                        onClick={() => void handleMarkAttendance(row.teacher_id, "sakit")}
+                        type="button"
+                        variant="secondary"
+                      >
+                        Sakit
+                      </Button>
+                      <Button
+                        className="min-h-0 px-3 py-1.5"
+                        disabled={isSaving}
+                        onClick={() => void handleMarkAttendance(row.teacher_id, "alfa")}
+                        type="button"
+                        variant="danger"
+                      >
+                        Alfa
+                      </Button>
+                    </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <input
-                      className="h-10 w-72 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100"
-                      placeholder="Catatan"
-                      value={row.note}
-                      onChange={(event) => updateRow(row.teacher_id, "note", event.target.value)}
-                    />
+                  <td className="px-4 py-3.5">
+                    <div className="min-w-56 space-y-2">
+                      {row.status ? <StatusBadge status={row.status} /> : null}
+                      <p className="text-sm text-slate-600">
+                        {row.note || "Belum dicatat."}
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        <div className="border-t border-slate-200 p-4">
-          <Button type="button" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? "Menyimpan..." : "Simpan Absensi"}
-          </Button>
         </div>
       </div>
     </div>

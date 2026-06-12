@@ -13,8 +13,8 @@ export function SppSummaryCards({ summary }: { summary: SppSummary }) {
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {items.map(([label, value]) => (
         <Card key={label}>
-          <p className="text-sm text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-950">{value}</p>
+          <p className="text-sm font-semibold text-slate-500">{label}</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-slate-950">{value}</p>
         </Card>
       ))}
     </section>

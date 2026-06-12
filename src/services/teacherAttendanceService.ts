@@ -62,9 +62,22 @@ export async function getTeacherAttendancesByDate(date: string) {
 
 export async function upsertTeacherAttendances(attendances: TeacherAttendanceInput[]) {
   const supabase = requireSupabase();
+  const payload = attendances.map((attendance) => {
+    if (!attendance.id) {
+      return {
+        attendance_date: attendance.attendance_date,
+        note: attendance.note,
+        status: attendance.status,
+        teacher_id: attendance.teacher_id,
+      };
+    }
+
+    return attendance;
+  });
+
   const { data, error } = await supabase
     .from("teacher_attendances")
-    .upsert(attendances, {
+    .upsert(payload, {
       onConflict: "teacher_id,attendance_date",
     })
     .select();
