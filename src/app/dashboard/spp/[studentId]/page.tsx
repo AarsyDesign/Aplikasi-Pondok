@@ -3,6 +3,7 @@ import { SppBillTable } from "@/components/spp/SppBillTable";
 import { SppPaymentTable } from "@/components/spp/SppPaymentTable";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { formatResidenceType } from "@/lib/utils";
 import { getSppBillsByStudent, getSppPaymentsByStudent } from "@/services/sppService";
 import { getStudentById } from "@/services/studentService";
 import { formatRupiah } from "@/types/spp";
@@ -33,10 +34,11 @@ export default async function SppStudentPage({
         <Button asChild variant="secondary"><Link href="/dashboard/spp/tagihan">Kembali</Link></Button>
       </div>
       <Card>
-        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           <div><dt className="text-sm text-slate-500">Nama Santri</dt><dd className="font-semibold">{student?.full_name ?? "-"}</dd></div>
           <div><dt className="text-sm text-slate-500">NIS</dt><dd className="font-semibold">{student?.nis ?? "-"}</dd></div>
           <div><dt className="text-sm text-slate-500">Kelas / Marhalah</dt><dd className="font-semibold">{student?.className ?? "-"}</dd></div>
+          <div><dt className="text-sm text-slate-500">Status Santri</dt><dd className="font-semibold">{formatResidenceType(student?.residence_type)}</dd></div>
           <div><dt className="text-sm text-slate-500">Nama Wali</dt><dd className="font-semibold">{student?.guardian_name ?? "-"}</dd></div>
           <div><dt className="text-sm text-slate-500">Nomor Wali</dt><dd className="font-semibold">{student?.guardian_phone ?? "-"}</dd></div>
         </dl>

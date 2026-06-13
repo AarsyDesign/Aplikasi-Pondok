@@ -148,9 +148,27 @@ export default function KelasPage() {
           Tambah Kelas / Marhalah
         </Button>
         }
-        description="Kelola data kelas dan marhalah yang digunakan oleh santri dan mapel."
+        description="Kelola kelas sesuai struktur pondok: dasar, fityan, dan muta'allimin."
         title="Kelas / Marhalah"
       />
+
+      <Card>
+        <h2 className="text-base font-semibold text-slate-950">Struktur Kelas</h2>
+        <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+            <p className="font-semibold text-slate-950">Ta&apos;sisiyah Dasar</p>
+            <p className="mt-1 text-slate-600">Tingkat 1-6, setara SD.</p>
+          </div>
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+            <p className="font-semibold text-slate-950">Marhalah Tarbiyatul Fityan</p>
+            <p className="mt-1 text-slate-600">Tingkat 1-3, setara SMP.</p>
+          </div>
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-4">
+            <p className="font-semibold text-slate-950">Tarbiyatul Muta&apos;allimin</p>
+            <p className="mt-1 text-slate-600">Tingkat 1-3, setara SMA.</p>
+          </div>
+        </div>
+      </Card>
 
       {error ? <Alert variant="danger">{error}</Alert> : null}
 

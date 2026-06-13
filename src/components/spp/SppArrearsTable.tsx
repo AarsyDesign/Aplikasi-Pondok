@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { formatResidenceType } from "@/lib/utils";
 import { isValidWhatsAppNumber } from "@/lib/whatsapp";
 import {
   formatRupiah,
@@ -41,6 +42,7 @@ export function SppArrearsTable({ emptyMessage, items, onOpenWhatsApp }: SppArre
                 "Nama Santri",
                 "NIS",
                 "Kelas / Marhalah",
+                "Status Santri",
                 "Nama Wali",
                 "Nomor Wali",
                 "Bulan",
@@ -67,6 +69,7 @@ export function SppArrearsTable({ emptyMessage, items, onOpenWhatsApp }: SppArre
                   <td className="px-4 py-3.5 font-semibold text-slate-950">{item.studentName}</td>
                   <td className="px-4 py-3.5 text-slate-700">{item.nis ?? "-"}</td>
                   <td className="px-4 py-3.5 text-slate-700">{item.className}</td>
+                  <td className="px-4 py-3.5 text-slate-700">{formatResidenceType(item.residence_type)}</td>
                   <td className="px-4 py-3.5 text-slate-700">{item.guardianName ?? "-"}</td>
                   <td className="px-4 py-3.5 text-slate-700">
                     <div>{item.guardianPhone ?? "-"}</div>

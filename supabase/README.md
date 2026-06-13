@@ -87,10 +87,33 @@ If the app shows a row-level security error while using the publishable key, run
 
 These policies are only for MVP/local development before authentication is implemented. Do not run `supabase/dev-policies.sql` after `supabase/rls.sql` unless you intentionally want temporary public development access again.
 
-## 8. Add grade duplicate protection
+## 8. Check duplicate data before constraints
+
+Run `supabase/duplicate-checks.sql` before adding stabilization constraints to an existing database.
+
+Review rows where `duplicate_count > 1` for:
+
+- nilai santri per santri + mapel + semester + tahun ajaran
+- absensi guru per guru + tanggal
+- tagihan SPP per santri + bulan + tahun
+- profil pengguna per `user_id`
+
+Do not delete production data blindly. Resolve duplicates manually after backup.
+
+## 9. Add grade duplicate protection
 
 For safe grade upsert behavior, run `supabase/grade-unique-constraint.sql` after confirming there are no duplicate grade rows for the same santri, mapel, semester, and tahun ajaran.
 
-## 9. Next development step
+## 10. Add profile duplicate protection
+
+For safe profile management, run `supabase/profile-unique-constraint.sql` after confirming there are no duplicate `profiles.user_id` rows.
+
+## 11. Add SPP mukim/non-mukim support
+
+Run `supabase/spp_residence_type_v1.sql` to add santri residence type, SPP settings, due date fields, indexes, and RLS policies for `spp_settings`.
+
+This script is non-destructive. It does not drop tables, delete data, or reset the database.
+
+## 12. Next development step
 
 The recommended next step is to keep the app working with authenticated RLS, then add a simple role field flow for admin, guru, and bendahara after the basic login flow is stable.

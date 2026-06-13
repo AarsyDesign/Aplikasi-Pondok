@@ -37,6 +37,16 @@ from public.spp_bills
 group by student_id, bill_month, bill_year
 having count(*) > 1;
 
+select 'grades.student_id+subject_id+semester_id+academic_year_id' as check_name, student_id::text || '|' || subject_id::text || '|' || semester_id::text || '|' || academic_year_id::text as duplicate_key, count(*) as duplicate_count
+from public.grades
+group by student_id, subject_id, semester_id, academic_year_id
+having count(*) > 1;
+
+select 'profiles.user_id' as check_name, user_id::text as duplicate_key, count(*) as duplicate_count
+from public.profiles
+group by user_id
+having count(*) > 1;
+
 select 'academic_years.active' as check_name, 'active_rows' as duplicate_key, count(*) as duplicate_count
 from public.academic_years
 where is_active = true

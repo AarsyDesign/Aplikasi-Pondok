@@ -1,3 +1,4 @@
+import { formatResidenceType } from "@/lib/utils";
 import {
   getMonthName,
   getSppStatusLabel,
@@ -61,6 +62,7 @@ export function exportSppArrearsToCsv(data: SppArrearsReportItem[], filters: Spp
     "Nama Santri",
     "NIS",
     "Kelas / Marhalah",
+    "Status Santri",
     "Nama Wali",
     "Nomor Wali",
     "Bulan",
@@ -76,6 +78,7 @@ export function exportSppArrearsToCsv(data: SppArrearsReportItem[], filters: Spp
     item.studentName,
     item.nis ?? "",
     item.className,
+    formatResidenceType(item.residence_type),
     item.guardianName ?? "",
     item.guardianPhone ?? "",
     getMonthName(item.bill_month),

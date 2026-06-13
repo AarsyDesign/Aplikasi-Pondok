@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { isValidOptionalPhoneNumber } from "@/lib/utils";
 import { Teacher, TeacherFormData } from "@/types/teacher";
 
 type GuruFormProps = {
@@ -57,6 +58,11 @@ export function GuruForm({
       return;
     }
 
+    if (!isValidOptionalPhoneNumber(formData.phone)) {
+      setValidationError("Nomor HP tidak valid. Gunakan angka, spasi, +, -, atau tanda kurung.");
+      return;
+    }
+
     await onSubmit(formData);
 
     if (!initialData) {
@@ -81,6 +87,7 @@ export function GuruForm({
       />
       <Input
         label="Nomor HP"
+        inputMode="tel"
         placeholder="08123456789"
         value={formData.phone}
         onChange={(event) => updateField("phone", event.target.value)}

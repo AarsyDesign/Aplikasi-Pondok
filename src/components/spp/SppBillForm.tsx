@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { isPositiveNumber, isValidYear } from "@/lib/utils";
 import { getMonthName, SppBill, SppBillFormData } from "@/types/spp";
 import { Student } from "@/types/student";
 
@@ -42,15 +43,18 @@ export function SppBillForm({ initialData, isSaving = false, onCancel, onSubmit,
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setValidationError("");
-    const amount = Number(formData.amount);
-
     if (!formData.student_id || !formData.bill_month || !formData.bill_year || !formData.amount) {
       setValidationError("Santri, bulan, tahun, dan nominal wajib diisi.");
       return;
     }
 
-    if (Number.isNaN(amount) || amount < 0) {
-      setValidationError("Nominal tagihan tidak boleh negatif.");
+    if (!isValidYear(formData.bill_year)) {
+      setValidationError("Tahun tagihan wajib 4 digit, contoh 2026.");
+      return;
+    }
+
+    if (!isPositiveNumber(formData.amount)) {
+      setValidationError("Nominal tagihan harus lebih dari 0.");
       return;
     }
 
@@ -69,8 +73,8 @@ export function SppBillForm({ initialData, isSaving = false, onCancel, onSubmit,
         required
       />
       <Select label="Bulan" value={formData.bill_month} onChange={(event) => updateField("bill_month", event.target.value)} options={monthOptions} required />
-      <Input label="Tahun" type="number" value={formData.bill_year} onChange={(event) => updateField("bill_year", event.target.value)} required />
-      <Input label="Nominal" type="number" value={formData.amount} onChange={(event) => updateField("amount", event.target.value)} required />
+      <Input label="Tahun" type="number" min={2000} value={formData.bill_year} onChange={(event) => updateField("bill_year", event.target.value)} required />
+      <Input label="Nominal" type="number" min={1} value={formData.amount} onChange={(event) => updateField("amount", event.target.value)} required />
       <label className="block text-sm font-medium text-slate-700 sm:col-span-2">
         Catatan
         <textarea className="mt-2 min-h-20 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 outline-none focus:border-emerald-700 focus:ring-2 focus:ring-emerald-100" value={formData.note} onChange={(event) => updateField("note", event.target.value)} />

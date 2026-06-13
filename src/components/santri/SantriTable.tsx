@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { formatResidenceType } from "@/lib/utils";
 import { Student } from "@/types/student";
 
 type SantriTableProps = {
@@ -26,7 +27,7 @@ export function SantriTable({ students, deletingId, onDelete }: SantriTableProps
         <table className="min-w-full divide-y divide-slate-200 text-sm">
           <thead className="bg-slate-50/80">
             <tr>
-              {["No", "NIS", "Nama", "Kelas / Marhalah", "Jenis Kelamin", "Status", "Aksi"].map(
+              {["No", "NIS", "Nama", "Kelas / Marhalah", "Status Santri", "Jenis Kelamin", "Status", "Aksi"].map(
                 (header) => (
                   <th key={header} className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
                     {header}
@@ -42,6 +43,7 @@ export function SantriTable({ students, deletingId, onDelete }: SantriTableProps
                 <td className="px-4 py-3.5 text-slate-700">{student.nis || "-"}</td>
                 <td className="px-4 py-3.5 font-semibold text-slate-950">{student.full_name}</td>
                 <td className="px-4 py-3.5 text-slate-700">{student.className}</td>
+                <td className="px-4 py-3.5"><StatusBadge status={student.residence_type}>{formatResidenceType(student.residence_type)}</StatusBadge></td>
                 <td className="px-4 py-3.5 text-slate-700">{student.gender || "-"}</td>
                 <td className="px-4 py-3.5"><StatusBadge status={student.status} /></td>
                 <td className="px-4 py-3.5">

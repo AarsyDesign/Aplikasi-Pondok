@@ -22,7 +22,9 @@ function getStatusLabel(status: string) {
     hadir: "Hadir",
     izin: "Izin",
     lunas: "Lunas",
+    mukim: "Mukim",
     nonaktif: "Nonaktif",
+    non_mukim: "Non Mukim",
     sakit: "Sakit",
     sebagian: "Sebagian",
   };
@@ -31,11 +33,11 @@ function getStatusLabel(status: string) {
 }
 
 function getStatusVariant(status: string): BadgeVariant {
-  if (["aktif", "admin", "guru", "bendahara", "hadir", "lunas"].includes(status)) {
+  if (["aktif", "admin", "guru", "bendahara", "hadir", "lunas", "mukim"].includes(status)) {
     return "success";
   }
 
-  if (["izin", "sebagian"].includes(status)) {
+  if (["izin", "sebagian", "non_mukim"].includes(status)) {
     return "warning";
   }
 

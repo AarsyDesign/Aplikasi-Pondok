@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { DEFAULT_INSTITUTION_PROFILE } from "@/types/institution";
 
 export default async function LoginPage() {
   const supabase = await createSupabaseServerClient();
+  let institutionName =
+    DEFAULT_INSTITUTION_PROFILE.short_name || DEFAULT_INSTITUTION_PROFILE.name;
 
   if (supabase) {
     const {
@@ -13,6 +16,18 @@ export default async function LoginPage() {
     if (user) {
       redirect("/dashboard");
     }
+
+    const { data: institutionProfile } = await supabase
+      .from("institution_profile")
+      .select("name, short_name")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    institutionName =
+      institutionProfile?.short_name ||
+      institutionProfile?.name ||
+      institutionName;
   }
 
   return (
@@ -20,7 +35,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-            Santri Report App
+            {institutionName}
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
             Login Admin

@@ -12,7 +12,7 @@ $$;
 
 create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade,
+  user_id uuid unique references auth.users(id) on delete cascade,
   full_name text not null,
   role text not null default 'admin',
   created_at timestamptz default now(),
@@ -39,11 +39,13 @@ create table if not exists public.students (
   guardian_phone text,
   address text,
   class_id uuid references public.classes(id) on delete set null,
+  residence_type text not null default 'non_mukim',
   status text not null default 'aktif',
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
   constraint students_status_check check (status in ('aktif', 'nonaktif', 'lulus', 'pindah')),
-  constraint students_gender_check check (gender in ('laki-laki', 'perempuan') or gender is null)
+  constraint students_gender_check check (gender in ('laki-laki', 'perempuan') or gender is null),
+  constraint students_residence_type_check check (residence_type in ('mukim', 'non_mukim'))
 );
 
 create table if not exists public.subjects (
@@ -129,6 +131,9 @@ create table if not exists public.spp_bills (
   bill_year integer not null,
   amount numeric not null default 0,
   status text not null default 'belum_bayar',
+  due_date date,
+  generated_by text,
+  generated_at timestamptz,
   note text,
   created_at timestamptz default now(),
   updated_at timestamptz default now(),
@@ -136,6 +141,22 @@ create table if not exists public.spp_bills (
   constraint spp_bills_amount_check check (amount >= 0),
   constraint spp_bills_status_check check (status in ('belum_bayar', 'sebagian', 'lunas')),
   constraint spp_bills_unique_student_month_year unique (student_id, bill_month, bill_year)
+);
+
+create table if not exists public.spp_settings (
+  id uuid primary key default gen_random_uuid(),
+  academic_year_id uuid references public.academic_years(id) on delete cascade,
+  class_id uuid references public.classes(id) on delete cascade,
+  residence_type text,
+  amount numeric not null default 0,
+  due_day integer not null default 10,
+  is_active boolean default true,
+  note text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  constraint spp_settings_residence_type_check check (residence_type in ('mukim', 'non_mukim') or residence_type is null),
+  constraint spp_settings_amount_check check (amount >= 0),
+  constraint spp_settings_due_day_check check (due_day between 1 and 28)
 );
 
 create table if not exists public.spp_payments (
@@ -170,6 +191,7 @@ create unique index if not exists institution_profile_singleton_idx
 on public.institution_profile ((true));
 
 create index if not exists students_class_id_idx on public.students(class_id);
+create index if not exists students_residence_type_idx on public.students(residence_type);
 create index if not exists subjects_class_id_idx on public.subjects(class_id);
 create index if not exists grades_student_id_idx on public.grades(student_id);
 create index if not exists grades_class_id_idx on public.grades(class_id);
@@ -180,6 +202,9 @@ create index if not exists teacher_attendances_teacher_id_idx on public.teacher_
 create index if not exists teacher_attendances_attendance_date_idx on public.teacher_attendances(attendance_date);
 create index if not exists spp_bills_student_id_idx on public.spp_bills(student_id);
 create index if not exists spp_bills_class_id_idx on public.spp_bills(class_id);
+create index if not exists spp_settings_academic_year_id_idx on public.spp_settings(academic_year_id);
+create index if not exists spp_settings_class_id_idx on public.spp_settings(class_id);
+create index if not exists spp_settings_residence_type_idx on public.spp_settings(residence_type);
 create index if not exists spp_payments_bill_id_idx on public.spp_payments(bill_id);
 create index if not exists spp_payments_student_id_idx on public.spp_payments(student_id);
 
@@ -231,6 +256,11 @@ for each row execute function public.set_updated_at();
 drop trigger if exists set_spp_bills_updated_at on public.spp_bills;
 create trigger set_spp_bills_updated_at
 before update on public.spp_bills
+for each row execute function public.set_updated_at();
+
+drop trigger if exists set_spp_settings_updated_at on public.spp_settings;
+create trigger set_spp_settings_updated_at
+before update on public.spp_settings
 for each row execute function public.set_updated_at();
 
 drop trigger if exists set_spp_payments_updated_at on public.spp_payments;

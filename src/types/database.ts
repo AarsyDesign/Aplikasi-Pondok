@@ -1,4 +1,5 @@
 import type { UserRole } from "@/types/profile";
+import type { ResidenceType } from "@/types/student";
 
 export type Profile = {
   id: string;
@@ -29,6 +30,7 @@ export type Student = {
   guardian_phone: string | null;
   address: string | null;
   class_id: string | null;
+  residence_type: ResidenceType | null;
   status: "aktif" | "nonaktif" | "lulus" | "pindah";
   created_at: string | null;
   updated_at: string | null;
@@ -104,6 +106,22 @@ export type SppBill = {
   bill_year: number;
   amount: number;
   status: "belum_bayar" | "sebagian" | "lunas";
+  due_date: string | null;
+  generated_by: string | null;
+  generated_at: string | null;
+  note: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+export type SppSetting = {
+  id: string;
+  academic_year_id: string | null;
+  class_id: string | null;
+  residence_type: ResidenceType | null;
+  amount: number;
+  due_day: number;
+  is_active: boolean | null;
   note: string | null;
   created_at: string | null;
   updated_at: string | null;
@@ -161,6 +179,7 @@ export type Database = {
       grades: TableDefinition<Grade>;
       teachers: TableDefinition<Teacher>;
       teacher_attendances: TableDefinition<TeacherAttendance>;
+      spp_settings: TableDefinition<SppSetting>;
       spp_bills: TableDefinition<SppBill>;
       spp_payments: TableDefinition<SppPayment>;
       institution_profile: TableDefinition<InstitutionProfile>;

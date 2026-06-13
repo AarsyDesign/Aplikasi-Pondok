@@ -22,6 +22,7 @@ begin
         ('grades', 'grades'),
         ('teachers', 'teachers'),
         ('teacher_attendances', 'teacher attendances'),
+        ('spp_settings', 'spp settings'),
         ('spp_bills', 'spp bills'),
         ('spp_payments', 'spp payments'),
         ('institution_profile', 'institution profile')

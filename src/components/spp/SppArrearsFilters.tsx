@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { ClassGroup } from "@/types/class";
+import type { ResidenceType } from "@/types/student";
 import { getMonthName, SppBillStatus } from "@/types/spp";
 
 type SppArrearsFiltersProps = {
@@ -12,10 +13,12 @@ type SppArrearsFiltersProps = {
   monthFilter: string;
   yearFilter: string;
   statusFilter: SppBillStatus | "";
+  residenceTypeFilter: ResidenceType | "";
   onClassChange: (value: string) => void;
   onMonthChange: (value: string) => void;
   onYearChange: (value: string) => void;
   onStatusChange: (value: SppBillStatus | "") => void;
+  onResidenceTypeChange: (value: ResidenceType | "") => void;
   onApply: () => void;
 };
 
@@ -25,10 +28,12 @@ export function SppArrearsFilters({
   monthFilter,
   yearFilter,
   statusFilter,
+  residenceTypeFilter,
   onApply,
   onClassChange,
   onMonthChange,
   onStatusChange,
+  onResidenceTypeChange,
   onYearChange,
 }: SppArrearsFiltersProps) {
   const monthOptions = Array.from({ length: 12 }, (_, index) => ({
@@ -38,7 +43,7 @@ export function SppArrearsFilters({
 
   return (
     <Card>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
         <Select
           label="Kelas / Marhalah"
           value={classFilter}
@@ -68,6 +73,16 @@ export function SppArrearsFilters({
             { label: "Belum Bayar", value: "belum_bayar" },
             { label: "Sebagian", value: "sebagian" },
             { label: "Lunas", value: "lunas" },
+          ]}
+        />
+        <Select
+          label="Status Santri"
+          value={residenceTypeFilter}
+          onChange={(event) => onResidenceTypeChange(event.target.value as ResidenceType | "")}
+          options={[
+            { label: "Semua", value: "" },
+            { label: "Mukim", value: "mukim" },
+            { label: "Non Mukim", value: "non_mukim" },
           ]}
         />
         <div className="flex items-end">

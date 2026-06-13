@@ -1,5 +1,8 @@
+import type { ResidenceType } from "@/types/student";
+
 export type SppBillStatus = "belum_bayar" | "sebagian" | "lunas";
 export type SppPaymentMethod = "tunai" | "transfer" | "lainnya";
+export type SppGeneratePreviewStatus = "akan_dibuat" | "sudah_ada" | "nominal_belum_diatur";
 
 export type SppBill = {
   id: string;
@@ -8,6 +11,7 @@ export type SppBill = {
   nis: string | null;
   guardianName: string | null;
   guardianPhone: string | null;
+  residence_type: ResidenceType;
   class_id: string | null;
   className: string;
   bill_month: number;
@@ -16,6 +20,9 @@ export type SppBill = {
   totalPaid: number;
   remaining: number;
   status: SppBillStatus;
+  due_date: string | null;
+  generated_by: string | null;
+  generated_at: string | null;
   note: string | null;
   created_at?: string | null;
   updated_at?: string | null;
@@ -35,6 +42,54 @@ export type SppPayment = {
   note: string | null;
   created_at?: string | null;
   updated_at?: string | null;
+};
+
+export type SppSetting = {
+  id: string;
+  academic_year_id: string | null;
+  academicYearName: string;
+  class_id: string | null;
+  className: string;
+  residence_type: ResidenceType | null;
+  amount: number;
+  due_day: number;
+  is_active: boolean | null;
+  note: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type SppSettingFormData = {
+  academic_year_id: string;
+  class_id: string;
+  residence_type: ResidenceType | "";
+  amount: string;
+  due_day: string;
+  is_active: boolean;
+  note: string;
+};
+
+export type SppAmountResult =
+  | { ok: true; amount: number; due_day: number; setting: SppSetting }
+  | { ok: false; message: string };
+
+export type SppGeneratePreviewItem = {
+  student_id: string;
+  studentName: string;
+  nis: string | null;
+  class_id: string | null;
+  className: string;
+  residence_type: ResidenceType;
+  amount: number | null;
+  due_date: string | null;
+  status: SppGeneratePreviewStatus;
+  message: string;
+};
+
+export type SppGenerateResult = {
+  created: number;
+  skippedExisting: number;
+  skippedWithoutAmount: number;
 };
 
 export type SppBillFormData = {
@@ -57,6 +112,7 @@ export type SppPaymentFormData = {
 export type SppBillFilters = {
   classId?: string;
   month?: string;
+  residenceType?: ResidenceType | "";
   year?: string;
   status?: SppBillStatus | "";
 };
@@ -70,6 +126,7 @@ export type SppReminderFilters = {
 export type SppArrearsFilters = {
   classId?: string;
   month?: string;
+  residenceType?: ResidenceType | "";
   year?: string;
   status?: SppBillStatus | "";
 };

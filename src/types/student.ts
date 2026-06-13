@@ -1,5 +1,6 @@
 export type StudentGender = "laki-laki" | "perempuan";
 export type StudentStatus = "aktif" | "nonaktif" | "lulus" | "pindah";
+export type ResidenceType = "mukim" | "non_mukim";
 
 export type Student = {
   id: string;
@@ -15,6 +16,7 @@ export type Student = {
   class_id: string | null;
   classId: string | null;
   className: string;
+  residence_type: ResidenceType;
   status: StudentStatus;
 };
 
@@ -28,5 +30,6 @@ export type StudentFormData = {
   guardian_phone: string;
   address: string;
   class_id: string;
+  residence_type: ResidenceType;
   status: StudentStatus;
 };

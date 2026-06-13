@@ -20,6 +20,7 @@ export const mockStudents: Student[] = [
     class_id: "kl-001",
     classId: "kl-001",
     className: "Marhalah 1",
+    residence_type: "non_mukim",
     status: "aktif",
   },
   {
@@ -36,6 +37,7 @@ export const mockStudents: Student[] = [
     class_id: "kl-001",
     classId: "kl-001",
     className: "Marhalah 1",
+    residence_type: "mukim",
     status: "aktif",
   },
   {
@@ -52,6 +54,7 @@ export const mockStudents: Student[] = [
     class_id: "kl-002",
     classId: "kl-002",
     className: "Marhalah 2",
+    residence_type: "non_mukim",
     status: "aktif",
   },
 ];
@@ -71,6 +74,7 @@ function mapStudent(row: StudentRow, className = "Belum ada kelas"): Student {
     class_id: row.class_id,
     classId: row.class_id,
     className,
+    residence_type: row.residence_type ?? "non_mukim",
     status: row.status,
   };
 }
@@ -96,6 +100,7 @@ function cleanStudentPayload(data: StudentFormData): StudentInsert {
     guardian_phone: data.guardian_phone.trim() || null,
     address: data.address.trim() || null,
     class_id: data.class_id || null,
+    residence_type: data.residence_type || "non_mukim",
     status: data.status,
   };
 }
@@ -109,7 +114,8 @@ function isStudentFormData(data: StudentFormData | StudentInsert | StudentUpdate
     typeof data.guardian_name === "string" &&
     typeof data.guardian_phone === "string" &&
     typeof data.address === "string" &&
-    typeof data.class_id === "string"
+    typeof data.class_id === "string" &&
+    typeof data.residence_type === "string"
   );
 }
 

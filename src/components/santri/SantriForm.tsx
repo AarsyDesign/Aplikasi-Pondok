@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { isValidOptionalPhoneNumber } from "@/lib/utils";
 import { ClassGroup } from "@/types/class";
 import { Student, StudentFormData, StudentStatus } from "@/types/student";
 
@@ -34,6 +35,7 @@ function getInitialFormData(student?: Student): StudentFormData {
     guardian_phone: student?.guardian_phone ?? "",
     address: student?.address ?? "",
     class_id: student?.class_id ?? "",
+    residence_type: student?.residence_type ?? "non_mukim",
     status: student?.status ?? "aktif",
   };
 }
@@ -77,6 +79,16 @@ export function SantriForm({
 
     if (!formData.status) {
       setValidationError("Status wajib dipilih.");
+      return;
+    }
+
+    if (!["mukim", "non_mukim"].includes(formData.residence_type)) {
+      setValidationError("Status santri wajib dipilih.");
+      return;
+    }
+
+    if (!isValidOptionalPhoneNumber(formData.guardian_phone)) {
+      setValidationError("Nomor wali tidak valid. Gunakan angka, spasi, +, -, atau tanda kurung.");
       return;
     }
 
@@ -134,6 +146,7 @@ export function SantriForm({
       />
       <Input
         label="Nomor Wali"
+        inputMode="tel"
         placeholder="08123456789"
         value={formData.guardian_phone}
         onChange={(event) => updateField("guardian_phone", event.target.value)}
@@ -143,6 +156,16 @@ export function SantriForm({
         value={formData.class_id}
         onChange={(event) => updateField("class_id", event.target.value)}
         options={classOptions}
+      />
+      <Select
+        label="Status Santri"
+        value={formData.residence_type}
+        onChange={(event) => updateField("residence_type", event.target.value as StudentFormData["residence_type"])}
+        options={[
+          { label: "Mukim", value: "mukim" },
+          { label: "Non Mukim", value: "non_mukim" },
+        ]}
+        required
       />
       <Select
         label="Status"

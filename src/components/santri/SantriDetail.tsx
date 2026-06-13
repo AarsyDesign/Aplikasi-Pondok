@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { SantriForm } from "@/components/santri/SantriForm";
+import { formatResidenceType } from "@/lib/utils";
 import { getClasses } from "@/services/classService";
 import { deleteStudent, getStudentById, updateStudent } from "@/services/studentService";
 import { ClassGroup } from "@/types/class";
@@ -151,6 +152,7 @@ export function SantriDetail({ id }: { id: string }) {
             <DetailItem label="Nama Wali" value={student.guardian_name} />
             <DetailItem label="Nomor Wali" value={student.guardian_phone} />
             <DetailItem label="Kelas / Marhalah" value={student.className} />
+            <DetailItem label="Status Santri" value={formatResidenceType(student.residence_type)} />
             <DetailItem label="Status" value={student.status} />
             <div className="sm:col-span-2">
               <DetailItem label="Alamat" value={student.address} />

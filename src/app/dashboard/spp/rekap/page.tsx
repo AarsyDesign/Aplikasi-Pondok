@@ -13,6 +13,7 @@ import { createSppReminderMessage, createWhatsAppUrl, isValidWhatsAppNumber } fr
 import { getClasses } from "@/services/classService";
 import { getSppArrearsReport, getSppArrearsSummary } from "@/services/sppService";
 import { ClassGroup } from "@/types/class";
+import type { ResidenceType } from "@/types/student";
 import { SppArrearsReportItem, SppArrearsSummary, SppBillStatus } from "@/types/spp";
 
 const initialDate = new Date();
@@ -37,12 +38,13 @@ export default function SppArrearsReportPage() {
   const [monthFilter, setMonthFilter] = useState(initialMonth);
   const [yearFilter, setYearFilter] = useState(initialYear);
   const [statusFilter, setStatusFilter] = useState<SppBillStatus | "">("");
+  const [residenceTypeFilter, setResidenceTypeFilter] = useState<ResidenceType | "">("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [exportMessage, setExportMessage] = useState("");
 
   function getBaseFilters() {
-    return { classId: classFilter, month: monthFilter, year: yearFilter };
+    return { classId: classFilter, month: monthFilter, residenceType: residenceTypeFilter, year: yearFilter };
   }
 
   function loadReport() {
@@ -135,9 +137,11 @@ export default function SppArrearsReportPage() {
         monthFilter={monthFilter}
         yearFilter={yearFilter}
         statusFilter={statusFilter}
+        residenceTypeFilter={residenceTypeFilter}
         onApply={loadReport}
         onClassChange={setClassFilter}
         onMonthChange={setMonthFilter}
+        onResidenceTypeChange={setResidenceTypeFilter}
         onStatusChange={setStatusFilter}
         onYearChange={setYearFilter}
       />
@@ -160,6 +164,7 @@ export default function SppArrearsReportPage() {
             classId: classFilter,
             className: selectedClass?.name,
             month: monthFilter,
+            residenceType: residenceTypeFilter,
             status: statusFilter,
             year: yearFilter,
           }}

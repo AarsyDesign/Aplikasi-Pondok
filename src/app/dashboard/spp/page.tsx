@@ -25,7 +25,9 @@ export default async function SppPage() {
         <p className="mt-1 text-sm text-slate-600">
           Pilih pekerjaan SPP yang ingin dilakukan.
         </p>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <Button asChild variant="secondary"><Link href="/dashboard/spp/pengaturan">Pengaturan SPP</Link></Button>
+          <Button asChild variant="secondary"><Link href="/dashboard/spp/generate">Generate Tagihan</Link></Button>
           <Button asChild><Link href="/dashboard/spp/tagihan">Kelola Tagihan SPP</Link></Button>
           <Button asChild variant="secondary"><Link href="/dashboard/spp/pembayaran">Input Pembayaran</Link></Button>
           <Button asChild variant="secondary"><Link href="/dashboard/spp/pengingat">Pengingat SPP</Link></Button>
